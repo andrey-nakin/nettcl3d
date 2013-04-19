@@ -24,7 +24,7 @@ struct Contact : public Tagable {
 
 	double beta, tau, v;
 
-	Point current, normal;
+	Point h, hNormal;
 	double phase;
 	double voltage;
 

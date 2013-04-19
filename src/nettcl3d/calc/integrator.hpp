@@ -209,8 +209,8 @@ private:
 			 */
 			f[i] = y[i + 1];
 			f[i + 1] = 1.0 / c->beta * (
-				twoPi * (c->current * c->normal)
-				+ calcCircuits(*ref)
+				- twoPi * (c->h * c->hNormal)
+				- calcCircuits(*ref)
 				- c->tau * y[i + 1]
 				- c->v * sin(y[i])
 			);

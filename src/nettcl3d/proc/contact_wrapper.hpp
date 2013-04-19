@@ -93,8 +93,8 @@ namespace proc {
 				Tcl_SetObjResult(interp, Tcl_NewDoubleObj(c.tau));
 			} else if ("v" == param) {
 				Tcl_SetObjResult(interp, Tcl_NewDoubleObj(c.v));
-			} else if ("current" == param) {
-				Tcl_SetObjResult(interp, phlib::TclUtils::toListOfDouble(interp, c.current.toVector()));
+			} else if ("h" == param) {
+				Tcl_SetObjResult(interp, phlib::TclUtils::toListOfDouble(interp, c.h.toVector()));
 			} else if ("phase" == param) {
 				Tcl_SetObjResult(interp, Tcl_NewDoubleObj(c.phase));
 			} else if ("voltage" == param) {
@@ -102,7 +102,7 @@ namespace proc {
 			} else if ("tags" == param) {
 				Tcl_SetObjResult(interp, getTagsObj(interp));
 			} else {
-				throw WrongArgValue(interp, "beta | tau | v | current | phase | voltage | tags");
+				throw WrongArgValue(interp, "beta | tau | v | h | phase | voltage | tags");
 			}
 
 			return TCL_OK;
@@ -120,14 +120,14 @@ namespace proc {
 				contact().tau = phlib::TclUtils::getDouble(interp, objv[1]);
 			} else if ("v" == param) {
 				contact().v = phlib::TclUtils::getDouble(interp, objv[1]);
-			} else if ("current" == param) {
-				contact().current = Point::fromVector(phlib::TclUtils::getDoubleVector(interp, objv[1]));
+			} else if ("h" == param) {
+				contact().h = Point::fromVector(phlib::TclUtils::getDoubleVector(interp, objv[1]));
 			} else if ("phase" == param) {
 				contact().phase = phlib::TclUtils::getDouble(interp, objv[1]);
 			} else if ("voltage" == param) {
 				contact().voltage = phlib::TclUtils::getDouble(interp, objv[1]);
 			} else {
-				throw WrongArgValue(interp, "beta | tau | v | current | phase | voltage");
+				throw WrongArgValue(interp, "beta | tau | v | h | phase | voltage");
 			}
 
 			return TCL_OK;

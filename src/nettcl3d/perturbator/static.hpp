@@ -49,7 +49,7 @@ namespace perturbator {
 					i != last;
 					++i, ++z) {
 
-				network.contact(*i).current = *z - sum;
+				network.contact(*i).h = *z - sum;
 			}
 		}
 

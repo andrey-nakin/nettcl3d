@@ -12,6 +12,7 @@
  */
 
 #include <string>
+#include <iostream>
 #include "grid3d.hpp"
 
 namespace populator {
@@ -89,6 +90,12 @@ Grid3d::index_type Grid3d::addXContact(Network& network, unsigned x, unsigned y,
 
 	setContactTags(c, x, y, z, true, false, false);
 
+	c.hNormal = Point(
+		0.0,
+		z == 0 ? 1.0 : z == params.zSize - 1 ? -1.0 : 0.0,
+		y == 0 ? -1.0 : y == params.ySize - 1 ? 1.0 : 0.0
+	);
+
 	return index;
 }
 
@@ -103,6 +110,12 @@ Grid3d::index_type Grid3d::addYContact(Network& network, unsigned x, unsigned y,
 
 	setContactTags(c, x, y, z, false, true, false);
 
+	c.hNormal = Point(
+		z == 0 ? -1.0 : z == params.zSize - 1 ? 1.0 : 0.0,
+		0.0,
+		x == 0 ? 1.0 : x == params.xSize - 1 ? -1.0 : 0.0
+	);
+
 	return index;
 }
 
@@ -116,6 +129,12 @@ Grid3d::index_type Grid3d::addZContact(Network& network, unsigned x, unsigned y,
 	c.setProp(props::z, z - 1);
 
 	setContactTags(c, x, y, z, false, false, true);
+
+	c.hNormal = Point(
+		y == 0 ? 1.0 : y == params.ySize - 1 ? -1.0 : 0.0,
+		x == 0 ? -1.0 : x == params.xSize - 1 ? 1.0 : 0.0,
+		0.0
+	);
 
 	return index;
 }

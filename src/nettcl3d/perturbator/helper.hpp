@@ -35,7 +35,7 @@ namespace perturbator {
 	protected:
 
 		void updateZ(Network& network, Network::index_type index, const Point& z) {
-			network.contact(index).current = z;
+			network.contact(index).h = z;
 		}
 
 	};
