@@ -211,6 +211,7 @@ void Grid3d::addXCircuit(Network& network, unsigned x, unsigned y, unsigned z, c
 	}
 
 	network.addCircuit(c);
+
 }
 
 void Grid3d::addYCircuit(Network& network, unsigned x, unsigned y, unsigned z, const IndexTensor& zIndices, const IndexTensor& xIndices) {

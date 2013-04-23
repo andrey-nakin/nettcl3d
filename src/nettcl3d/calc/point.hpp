@@ -15,6 +15,7 @@
 #define CALC_POINT_HPP_
 
 #include <vector>
+#include <iostream>
 
 class Point {
 
@@ -73,5 +74,6 @@ public:
 Point operator+(const Point& a, const Point& b);
 Point operator-(const Point& a, const Point& b);
 double operator*(const Point& a, const Point& b);
+std::ostream& operator<<(std::ostream&, const Point&);
 
 #endif /* CALC_POINT_HPP_ */

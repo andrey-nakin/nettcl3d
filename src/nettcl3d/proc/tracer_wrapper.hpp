@@ -145,8 +145,8 @@ namespace proc {
 
 		template <typename Tracer>
 		static Tracer* makeIndexTracer(Tcl_Interp * interp, int objc, Tcl_Obj* const objv[]) {
-			if (objc > 6)
-				throw WrongNumArgs(interp, 1, objv, "?fileNameFormat? ?interval? ?startTime? ?precision? ?indices?");
+			if (objc > 7)
+				throw WrongNumArgs(interp, 1, objv, "?fileNameFormat? ?interval? ?startTime? ?precision? ?indices? ?tagExpr?");
 
 			typedef typename Tracer::Params Params;
 			Params params;
@@ -173,6 +173,10 @@ namespace proc {
 			if (objc > 5) {
 				const std::vector<unsigned> src = phlib::TclUtils::getUIntVector(interp, objv[5]);
 				params.indices = typename Params::IndexContainer(src.begin(), src.end());
+			}
+
+			if (objc > 6) {
+				params.tagExpr = Tcl_GetStringFromObj(objv[6], NULL);
 			}
 
 			return new Tracer(params);

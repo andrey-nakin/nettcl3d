@@ -24,3 +24,7 @@ Point operator-(const Point& a, const Point& b) {
 double operator*(const Point& a, const Point& b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
+
+std::ostream& operator<<(std::ostream& s, const Point& p) {
+	return s << p.x << '\t' << p.y << '\t' << p.z;
+}

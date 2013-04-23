@@ -54,6 +54,7 @@ namespace tracer {
 			double interval;
 			int precision;
 			IndexContainer indices;
+			std::string tagExpr;
 
 			Params() :
 				fileNameFormat(Worker::fileNameFormat()),
@@ -145,10 +146,16 @@ namespace tracer {
 		void open(const Network& source) {
 			// populate vector of node indices
 			Network::IndexVector indices;
-			if (params.indices.size() > 0) {
+
+			if (!params.tagExpr.empty()) {
+				indices = source.buildContactIndices(params.tagExpr);
+			}
+
+			if (indices.empty() && !params.indices.empty()) {
 				// indices are explicitly specified
 				std::copy(params.indices.begin(), params.indices.end(), std::back_insert_iterator<Network::IndexVector>(indices));
 			}
+
 			if (indices.empty()) {
 				// trace all network nodes
 				std::generate_n(std::back_insert_iterator<Network::IndexVector>(indices), source.getNumOfContacts(), IndexGenerator());

@@ -109,6 +109,7 @@ proc nettcl3d::makeTracer { args } {
 	            $options(startTime)  \
 	            $options(precision)  \
 	            $options(indices)  \
+	            $options(tagExpr)  \
             ]
         }
        
@@ -152,5 +153,8 @@ proc nettcl3d::foreachCircuit { varName network tagExpr expression } {
 	foreach var [nettcl3d::network get $network circuits $tagExpr] {
 		uplevel $expression
 	}
+}
+
+proc nettcl3d::contactIndices { network tagExpr } {
 }
 
