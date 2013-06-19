@@ -22,6 +22,7 @@
 #include "../tracer/voltage.hpp"
 #include "../tracer/avg_flux.hpp"
 #include "../tracer/flux.hpp"
+#include "../tracer/flux_section.hpp"
 
 namespace proc {
 
@@ -98,8 +99,12 @@ namespace proc {
 				tracer = makeIndexTracer<tracer::Flux>(interp, objc, objv);
 			}
 
+			else if ("flux-section" == tracerType) {
+				tracer = makeFluxSectionTracer(interp, objc, objv);
+			}
+
 			else
-				throw WrongArgValue(interp, "null | avg-voltage | voltage | avg-flux | flux");
+				throw WrongArgValue(interp, "null | avg-voltage | voltage | avg-flux | flux | flux-section");
 
 			// instantiate new TCL object
 			Tcl_Obj* const w = Tcl_NewObj();
@@ -180,6 +185,35 @@ namespace proc {
 			}
 
 			return new Tracer(params);
+		}
+
+		static tracer::FluxSection* makeFluxSectionTracer(Tcl_Interp * interp, int objc, Tcl_Obj* const objv[]) {
+			if (objc < 3 || objc > 4)
+				throw WrongNumArgs(interp, 1, objv, "plane position ?fileName?");
+
+			typedef tracer::FluxSection::Params Params;
+			Params params;
+
+			const std::string s = Tcl_GetStringFromObj(objv[1], NULL);
+			if (s == "x" || s == "X") {
+				params.plane = Params::X;
+			} else if (s == "y" || s == "Y") {
+				params.plane = Params::Y;
+			} else if (s == "z" || s == "Z") {
+				params.plane = Params::Z;
+			} else {
+				throw WrongArgValue(interp, "plane must be x, y or z");
+			}
+
+			params.position = phlib::TclUtils::getUInt(interp, objv[2]);
+
+			if (objc > 3) {
+				const std::string s = Tcl_GetStringFromObj(objv[3], NULL);
+				if (!s.empty()) {
+					params.fileName = s;
+				}
+			}
+			return new tracer::FluxSection(params);
 		}
 
 	public:

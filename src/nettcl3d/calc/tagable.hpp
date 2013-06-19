@@ -19,6 +19,7 @@
 #include <map>
 #include <stdexcept>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
 #include "point.hpp"
 
 struct Tagable {
@@ -81,6 +82,13 @@ struct Tagable {
 		static const std::string empty;
 		const Tagable::PropContainer::const_iterator i = props.find(name);
 		return i == props.end() ? empty : i->second;
+	}
+
+	template <typename T>
+	const T getTypedProp(const std::string& name) const {
+		static const std::string empty;
+		const Tagable::PropContainer::const_iterator i = props.find(name);
+		return boost::lexical_cast<T>(i == props.end() ? empty : i->second);
 	}
 
 	/**
