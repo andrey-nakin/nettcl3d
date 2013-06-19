@@ -252,6 +252,7 @@ private:
 				ref.index = std::distance(first, circuit);
 				ref.gain = ci->gain;
 			}
+
 		}
 	}
 

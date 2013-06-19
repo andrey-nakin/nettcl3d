@@ -90,11 +90,18 @@ Grid3d::index_type Grid3d::addXContact(Network& network, unsigned x, unsigned y,
 
 	setContactTags(c, x, y, z, true, false, false);
 
-	c.hNormal = Point(
-		0.0,
-		z == 0 ? 1.0 : z == params.zSize - 1 ? -1.0 : 0.0,
-		y == 0 ? -1.0 : y == params.ySize - 1 ? 1.0 : 0.0
-	);
+	if (z == 0) {
+		c.hNormal.y -= 1.0;
+	}
+	if (z == params.zSize - 1) {
+		c.hNormal.y += 1.0;
+	}
+	if (y == 0) {
+		c.hNormal.z += 1.0;
+	}
+	if (y == params.ySize - 1) {
+		c.hNormal.z -= 1.0;
+	}
 
 	return index;
 }
@@ -110,11 +117,18 @@ Grid3d::index_type Grid3d::addYContact(Network& network, unsigned x, unsigned y,
 
 	setContactTags(c, x, y, z, false, true, false);
 
-	c.hNormal = Point(
-		z == 0 ? -1.0 : z == params.zSize - 1 ? 1.0 : 0.0,
-		0.0,
-		x == 0 ? 1.0 : x == params.xSize - 1 ? -1.0 : 0.0
-	);
+	if (x == 0) {
+		c.hNormal.z -= 1.0;
+	}
+	if (x == params.xSize - 1) {
+		c.hNormal.z += 1.0;
+	}
+	if (z == 0) {
+		c.hNormal.x += 1.0;
+	}
+	if (z == params.zSize - 1) {
+		c.hNormal.x -= 1.0;
+	}
 
 	return index;
 }
@@ -130,11 +144,18 @@ Grid3d::index_type Grid3d::addZContact(Network& network, unsigned x, unsigned y,
 
 	setContactTags(c, x, y, z, false, false, true);
 
-	c.hNormal = Point(
-		y == 0 ? 1.0 : y == params.ySize - 1 ? -1.0 : 0.0,
-		x == 0 ? -1.0 : x == params.xSize - 1 ? 1.0 : 0.0,
-		0.0
-	);
+	if (y == 0) {
+		c.hNormal.x -= 1.0;
+	}
+	if (y == params.ySize - 1) {
+		c.hNormal.x += 1.0;
+	}
+	if (x == 0) {
+		c.hNormal.y += 1.0;
+	}
+	if (x == params.xSize - 1) {
+		c.hNormal.y -= 1.0;
+	}
 
 	return index;
 }
@@ -150,7 +171,7 @@ void Grid3d::setContactTags(Contact& c, unsigned x, unsigned y, unsigned z, bool
 			c.addTag(tags::west);
 			c.addTag(tags::boundary);
 		}
-		else if (x == params.xSize - 1) {
+		if (x == params.xSize - 1) {
 			c.addTag(tags::east);
 			c.addTag(tags::boundary);
 		}
@@ -160,7 +181,8 @@ void Grid3d::setContactTags(Contact& c, unsigned x, unsigned y, unsigned z, bool
 		if (y == 0) {
 			c.addTag(tags::south);
 			c.addTag(tags::boundary);
-		} else if (y == params.ySize - 1) {
+		}
+		if (y == params.ySize - 1) {
 			c.addTag(tags::north);
 			c.addTag(tags::boundary);
 		}
@@ -170,7 +192,8 @@ void Grid3d::setContactTags(Contact& c, unsigned x, unsigned y, unsigned z, bool
 		if (z == 0) {
 			c.addTag(tags::bottom);
 			c.addTag(tags::boundary);
-		} else if (z == params.zSize - 1) {
+		}
+		if (z == params.zSize - 1) {
 			c.addTag(tags::top);
 			c.addTag(tags::boundary);
 		}
@@ -188,10 +211,10 @@ void Grid3d::addContactRef(Circuit& c, index_type index, const double gain, cons
 void Grid3d::addXCircuit(Network& network, unsigned x, unsigned y, unsigned z, const IndexTensor& yIndices, const IndexTensor& zIndices) {
 	Circuit c(square);
 
-	addContactRef(c, yIndices[x][y - 1][z - 1], 1.0, 1.0);
-	addContactRef(c, zIndices[x][y][z - 1], 1.0, 1.0);
-	addContactRef(c, yIndices[x][y - 1][z], 1.0, -1.0);
-	addContactRef(c, zIndices[x][y - 1][z - 1], 1.0, -1.0);
+	addContactRef(c, yIndices[x][y][z - 1], 1.0, 1.0);
+	addContactRef(c, zIndices[x][y][z], 1.0, 1.0);
+	addContactRef(c, yIndices[x][y][z], -1.0, -1.0);
+	addContactRef(c, zIndices[x][y - 1][z], -1.0, -1.0);
 
 	c.addTag(tags::x);
 	c.setProp(props::x, x);
@@ -201,7 +224,8 @@ void Grid3d::addXCircuit(Network& network, unsigned x, unsigned y, unsigned z, c
 	if (x == 0) {
 		c.addTag(tags::west);
 		c.addTag(tags::boundary);
-	} else if (x == params.xSize - 1) {
+	}
+	if (x == params.xSize - 1) {
 		c.addTag(tags::east);
 		c.addTag(tags::boundary);
 	}
@@ -217,10 +241,10 @@ void Grid3d::addXCircuit(Network& network, unsigned x, unsigned y, unsigned z, c
 void Grid3d::addYCircuit(Network& network, unsigned x, unsigned y, unsigned z, const IndexTensor& zIndices, const IndexTensor& xIndices) {
 	Circuit c(square);
 
-	addContactRef(c, zIndices[x - 1][y][z - 1], 1.0, 1.0);
-	addContactRef(c, xIndices[x - 1][y][z], 1.0, 1.0);
-	addContactRef(c, zIndices[x][y][z - 1], 1.0, -1.0);
-	addContactRef(c, xIndices[x - 1][y][z - 1], 1.0, -1.0);
+	addContactRef(c, zIndices[x - 1][y][z], 1.0, 1.0);
+	addContactRef(c, xIndices[x][y][z], 1.0, 1.0);
+	addContactRef(c, zIndices[x][y][z], -1.0, -1.0);
+	addContactRef(c, xIndices[x][y][z - 1], -1.0, -1.0);
 
 	c.addTag(tags::y);
 	c.setProp(props::x, x - 1);
@@ -230,7 +254,8 @@ void Grid3d::addYCircuit(Network& network, unsigned x, unsigned y, unsigned z, c
 	if (y == 0) {
 		c.addTag(tags::south);
 		c.addTag(tags::boundary);
-	} else if (y == params.ySize - 1) {
+	}
+	if (y == params.ySize - 1) {
 		c.addTag(tags::north);
 		c.addTag(tags::boundary);
 	}
@@ -245,10 +270,10 @@ void Grid3d::addYCircuit(Network& network, unsigned x, unsigned y, unsigned z, c
 void Grid3d::addZCircuit(Network& network, unsigned x, unsigned y, unsigned z, const IndexTensor& xIndices, const IndexTensor& yIndices) {
 	Circuit c(square);
 
-	addContactRef(c, xIndices[x - 1][y - 1][z], 1.0, 1.0);
-	addContactRef(c, yIndices[x][y - 1][z], 1.0, 1.0);
-	addContactRef(c, xIndices[x - 1][y][z], 1.0, -1.0);
-	addContactRef(c, yIndices[x - 1][y - 1][z], 1.0, -1.0);
+	addContactRef(c, xIndices[x][y - 1][z], 1.0, 1.0);
+	addContactRef(c, yIndices[x][y][z], 1.0, 1.0);
+	addContactRef(c, xIndices[x][y][z], -1.0, -1.0);
+	addContactRef(c, yIndices[x - 1][y][z], -1.0, -1.0);
 
 	c.addTag(tags::z);
 	c.setProp(props::x, x - 1);
@@ -258,7 +283,8 @@ void Grid3d::addZCircuit(Network& network, unsigned x, unsigned y, unsigned z, c
 	if (z == 0) {
 		c.addTag(tags::bottom);
 		c.addTag(tags::boundary);
-	} else if (z == params.zSize - 1) {
+	}
+	if (z == params.zSize - 1) {
 		c.addTag(tags::top);
 		c.addTag(tags::boundary);
 	}
