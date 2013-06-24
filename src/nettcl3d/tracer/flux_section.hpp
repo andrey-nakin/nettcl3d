@@ -47,7 +47,6 @@ namespace tracer {
 			boost::optional<Position> mina, maxa, minb, maxb;
 			const std::string plane = getPlaneProperty(params.plane), 
 				aprop = getAProperty(params.plane), bprop = getBProperty(params.plane);
-			boost::multi_array<boost::optional<Position>, 2> indices;
 
 			// determine ranges of (a, b) coordinates on plane
 			for (Network::circuit_const_iterator first = network.circuitBegin(), i = first ,last = network.circuitEnd();
@@ -61,8 +60,6 @@ namespace tracer {
 					const Position b = i->getTypedProp<Position>(bprop);
 					check(minb, b, std::less<Position>());
 					check(maxb, b, std::greater<Position>());
-
-					indices[a][b] = std::distance(first, i);
 				}
 			}
 			
@@ -71,12 +68,25 @@ namespace tracer {
 				return;
 			}
 
-			std::ofstream f(params.fileName);
+			// populate index matrix
+			boost::multi_array<boost::optional<Position>, 2> indices(boost::extents[maxa.get() + 1][maxb.get() + 1]);
+			for (Network::circuit_const_iterator first = network.circuitBegin(), i = first ,last = network.circuitEnd();
+					i != last; ++i) {
+
+				if (i->hasTag(plane) && i->getTypedProp<Position>(plane) == params.position) {
+					const Position a = i->getTypedProp<Position>(aprop);
+					const Position b = i->getTypedProp<Position>(bprop);
+					indices[a][b] = std::distance(first, i);
+				}
+			}
+
+			std::ofstream f(params.fileName.c_str());
 			f << "# plane " << plane << ", position " << params.position << '\n';
+			f << "# " << aprop << '\t' << bprop << '\n';
 			for (Position a = mina.get(); a <= maxa.get(); ++a) {
 				for (Position b = minb.get(); b <= maxb.get(); ++b) {
 					if (indices[a][b].is_initialized()) {
-						f << a << 't' << b << 't' << network.flux(indices[a][b].get()) << '\n';
+						f << a << '\t' << b << '\t' << network.flux(indices[a][b].get()) << '\n';
 					}
 				}
 				f << '\n';
@@ -120,7 +130,7 @@ namespace tracer {
 		}
 
 		template <typename Comparator>
-		static void check(boost::optional<Position>& accum, Position value, Comparator& comparator) {
+		static void check(boost::optional<Position>& accum, Position value, Comparator comparator) {
 			if (accum.is_initialized()) {
 				if (comparator(value, accum.get())) {
 					accum = value;
