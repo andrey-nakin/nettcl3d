@@ -121,6 +121,7 @@ public:
 	}
 
 	double flux(const index_type circuitIndex) const {
+		const static double k = 1.0 / 2.0 / 3.14159265359;
 		const Circuit& c = circuit(circuitIndex);
 		double sum = 0.0;
 
@@ -128,7 +129,7 @@ public:
 			sum += i->weight * contact(i->index).phase;
 		}
 
-		return c.square * sum;
+		return c.square * sum * k;
 	}
 
 private:

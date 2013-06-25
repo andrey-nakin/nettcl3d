@@ -81,8 +81,7 @@ namespace tracer {
 			}
 
 			std::ofstream f(params.fileName.c_str());
-			f << "# plane " << plane << ", position " << params.position << '\n';
-			f << "# " << aprop << '\t' << bprop << '\n';
+			f << "# " << aprop << '\t' << bprop << '\t' << "Phi_" << plane << '[' << params.position << "]\n";
 			for (Position a = mina.get(); a <= maxa.get(); ++a) {
 				for (Position b = minb.get(); b <= maxb.get(); ++b) {
 					if (indices[a][b].is_initialized()) {
